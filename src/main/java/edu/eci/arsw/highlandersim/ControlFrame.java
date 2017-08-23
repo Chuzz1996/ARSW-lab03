@@ -1,5 +1,6 @@
 package edu.eci.arsw.highlandersim;
 
+import com.sun.jndi.toolkit.ctx.AtomicDirContext;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.util.LinkedList;
@@ -20,11 +21,16 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.Color;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ControlFrame extends JFrame {
 
     private static final int DEFAULT_IMMORTAL_HEALTH = 100;
     private static final int DEFAULT_DAMAGE_VALUE = 10;
+    
+    private String waiting = Thread.State.WAITING.toString();
+    
+    public static Object obj = new Object();
 
     private JPanel contentPane;
 
@@ -32,6 +38,7 @@ public class ControlFrame extends JFrame {
 
     private JTextArea output;
     private JTextField numOfImmortals;
+    
 
     /**
      * Launch the application.
@@ -85,12 +92,19 @@ public class ControlFrame extends JFrame {
         btnPauseAndCheck.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-                /*
-				 * COMPLETAR
-                 */
-                int sum = 0;
+               
+                for(Immortal im: immortals){
+                    im.pause();
+                }int n = 0;
+                while(n<immortals.size()){
+                    if(immortals.get(n).getState().toString().equals(waiting)){
+                        n++;
+                    }
+                }
+                
+                AtomicInteger sum = new AtomicInteger(0);
                 for (Immortal im : immortals) {
-                    sum += im.getHealth();
+                    sum.addAndGet(im.getHealth().get());
                 }
 
                 output.setText(immortals.toString() + ". Sum:" + sum);
@@ -103,9 +117,13 @@ public class ControlFrame extends JFrame {
 
         btnResume.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                /**
-                 * IMPLEMENTAR
-                 */
+                
+                for(Immortal im: immortals){
+                    im.resumen();
+                }
+                synchronized(obj){
+                    obj.notifyAll();
+                }
 
             }
         });
@@ -141,7 +159,7 @@ public class ControlFrame extends JFrame {
             List<Immortal> il = new LinkedList<Immortal>();
 
             for (int i = 0; i < ni; i++) {
-                Immortal i1 = new Immortal("im" + i, il, DEFAULT_IMMORTAL_HEALTH, DEFAULT_DAMAGE_VALUE);
+                Immortal i1 = new Immortal("im" + i, il, new AtomicInteger(DEFAULT_IMMORTAL_HEALTH), new AtomicInteger(DEFAULT_DAMAGE_VALUE));
                 il.add(i1);
             }
             return il;
