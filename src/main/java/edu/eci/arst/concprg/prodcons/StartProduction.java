@@ -17,13 +17,12 @@ import java.util.logging.Logger;
 
 public class StartProduction {
     
-    
     public static void main(String[] args) {
         
-        Queue<Integer> queue=new LinkedBlockingQueue<>();
+        LinkedBlockingQueue<Integer> queue=new LinkedBlockingQueue<>();
         
         //generating STOCK
-        new Producer(queue,Long.MAX_VALUE).start();
+        new Producer(queue,10).start();
         
         try {
             Thread.sleep(5000);
