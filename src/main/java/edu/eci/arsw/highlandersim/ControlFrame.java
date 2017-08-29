@@ -139,6 +139,13 @@ public class ControlFrame extends JFrame {
         numOfImmortals.setColumns(10);
 
         JButton btnStop = new JButton("STOP");
+        
+        btnStop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("PREGUNTAR");
+            }
+        });
         btnStop.setForeground(Color.RED);
         toolBar.add(btnStop);
 

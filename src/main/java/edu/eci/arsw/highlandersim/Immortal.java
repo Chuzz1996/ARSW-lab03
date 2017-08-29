@@ -76,8 +76,8 @@ public class Immortal extends Thread {
 
     public void fight(Immortal i2) {
         
-        synchronized(this){
-            synchronized(i2){
+        synchronized(ControlFrame.obj){
+            synchronized(ControlFrame.obj){
                 if (i2.getHealth().get() > 0) {
                     i2.changeHealth(new AtomicInteger(i2.getHealth().get() - defaultDamageValue.get()));
                     this.health.addAndGet(defaultDamageValue.get());
