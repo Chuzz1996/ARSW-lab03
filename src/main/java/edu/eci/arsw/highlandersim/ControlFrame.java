@@ -39,6 +39,7 @@ public class ControlFrame extends JFrame {
     private JTextArea output;
     private JTextField numOfImmortals;
     
+    public static boolean acabar = false;
 
     /**
      * Launch the application.
@@ -143,7 +144,7 @@ public class ControlFrame extends JFrame {
         btnStop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("PREGUNTAR");
+                acabar = true;
             }
         });
         btnStop.setForeground(Color.RED);
@@ -166,7 +167,7 @@ public class ControlFrame extends JFrame {
             List<Immortal> il = new LinkedList<Immortal>();
 
             for (int i = 0; i < ni; i++) {
-                Immortal i1 = new Immortal("im" + i, il, new AtomicInteger(DEFAULT_IMMORTAL_HEALTH), new AtomicInteger(DEFAULT_DAMAGE_VALUE));
+                Immortal i1 = new Immortal("im" + i, il, new AtomicInteger(DEFAULT_IMMORTAL_HEALTH), new AtomicInteger(DEFAULT_DAMAGE_VALUE),i);
                 il.add(i1);
             }
             return il;

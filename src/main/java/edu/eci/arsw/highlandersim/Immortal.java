@@ -17,6 +17,8 @@ public class Immortal extends Thread {
     private final Random r = new Random(System.currentTimeMillis());
 
     boolean pause = false;
+    
+    public int push;
 
     public void pause() {
         pause = true;
@@ -30,17 +32,18 @@ public class Immortal extends Thread {
         pause = false;
     }
 
-    public Immortal(String name, List<Immortal> immortalsPopulation, AtomicInteger health, AtomicInteger defaultDamageValue) {
+    public Immortal(String name, List<Immortal> immortalsPopulation, AtomicInteger health, AtomicInteger defaultDamageValue, int push) {
         super(name);
         this.name = name;
         this.immortalsPopulation = immortalsPopulation;
         this.health = health;
         this.defaultDamageValue=defaultDamageValue;
+        this.push = push;
     }
 
     public void run() {
 
-        while (true) {
+        while (!ControlFrame.acabar) {
             if(!pause){
                 Immortal im;
 
@@ -76,14 +79,25 @@ public class Immortal extends Thread {
 
     public void fight(Immortal i2) {
         
-        synchronized(ControlFrame.obj){
-            synchronized(ControlFrame.obj){
+        Immortal x1;
+        Immortal x2;
+        
+        if(this.push>i2.push){
+            x1 = this;
+            x2 = i2;
+        }else{
+            x1 = i2;
+            x2 = this;
+        }
+        
+        synchronized(x1){
+            synchronized(x2){
                 if (i2.getHealth().get() > 0) {
                     i2.changeHealth(new AtomicInteger(i2.getHealth().get() - defaultDamageValue.get()));
                     this.health.addAndGet(defaultDamageValue.get());
-                    System.out.println("Fight: " + this + " vs " + i2);
+                    //System.out.println("Fight: " + this + " vs " + i2);
                 } else {
-                    System.out.println(this + " says:" + i2 + " is already dead!");
+                    //System.out.println(this + " says:" + i2 + " is already dead!");
                 }
             }
         }
